@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign in</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <main class="login-main">
+    <h1>Sign in</h1>
+    <p>Enter your email and we'll send you a sign-in link.</p>
+    <form id="login-form">
+      <input type="email" id="email" placeholder="you@example.com" required autocomplete="email" />
+      <button type="submit">Send me a link</button>
+    </form>
+    <p id="status" role="status"></p>
+  </main>
+
+  <script type="module">
+    import { signInWithEmail } from "./js/auth.js";
+    import { supabase } from "./js/supabaseClient.js";
+
+    // Already signed in? Go straight to the diary.
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) window.location.replace("index.html");
+
+    const form = document.getElementById("login-form");
+    const status = document.getElementById("status");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      status.textContent = "Sending...";
+      const { error } = await signInWithEmail(email);
+      status.textContent = error
+        ? "Something went wrong. Try again."
+        : "Check your email for the sign-in link.";
+    });
+  </script>
+</body>
+</html>

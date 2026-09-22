@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Diary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <strong>Diary</strong>
+    <nav>
+      <a href="index.html">Diary</a>
+      <a href="profile.html">Profile</a>
+      <a href="log.html">Food log</a>
+      <a href="#" id="sign-out">Sign out</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="month-nav">
+      <button class="secondary" id="prev-month" aria-label="Previous month">&larr;</button>
+      <h1 id="month-label"></h1>
+      <button class="secondary" id="next-month" aria-label="Next month">&rarr;</button>
+    </div>
+
+    <div class="calendar-grid" id="calendar-weekdays"></div>
+    <div class="calendar-grid" id="calendar-days"></div>
+
+    <div class="button-row">
+      <button id="add-entry-btn">+ Add entry</button>
+    </div>
+  </main>
+
+  <!-- Add/edit entry modal -->
+  <div class="modal-backdrop" id="entry-modal" hidden>
+    <div class="modal">
+      <h2 id="entry-modal-title">Add entry</h2>
+      <form id="entry-form">
+        <input type="hidden" id="entry-id" />
+        <label>Date
+          <input type="date" id="entry-date" required />
+        </label>
+        <label>Title
+          <input type="text" id="entry-title" required />
+        </label>
+        <label>Content
+          <textarea id="entry-content" rows="6"></textarea>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="entry-pinned" />
+          Pin this entry
+        </label>
+        <div class="modal-actions">
+          <button type="button" class="secondary" id="entry-cancel">Cancel</button>
+          <button type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Day detail: list of entries for a clicked day -->
+  <div class="modal-backdrop" id="day-modal" hidden>
+    <div class="modal">
+      <h2 id="day-modal-title"></h2>
+      <div id="day-entries-list"></div>
+      <div class="modal-actions">
+        <button type="button" class="secondary" id="day-close">Close</button>
+        <button type="button" id="day-add-entry">+ Add entry for this day</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/diary.js"></script>
+</body>
+</html>

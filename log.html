@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Food log</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <strong>Diary</strong>
+    <nav>
+      <a href="index.html">Diary</a>
+      <a href="profile.html">Profile</a>
+      <a href="log.html">Food log</a>
+      <a href="#" id="sign-out">Sign out</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Daily food log</h1>
+
+    <label>Date
+      <input type="date" id="log-date" />
+    </label>
+
+    <datalist id="foods-datalist"></datalist>
+
+    <div id="meals"></div>
+
+    <div class="stat-list" id="day-totals"></div>
+
+    <div class="button-row">
+      <button id="save-log">Save day</button>
+      <button type="button" class="secondary" id="add-food-toggle">+ Add custom food</button>
+    </div>
+
+    <form id="add-food-form" hidden class="add-food-form">
+      <input type="text" id="cf-name" placeholder="Food name" required />
+      <label>kcal / 100g <input type="number" id="cf-kcal" step="0.1" required /></label>
+      <label>Protein g / 100g <input type="number" id="cf-protein" step="0.1" required /></label>
+      <label>Fat g / 100g <input type="number" id="cf-fat" step="0.1" required /></label>
+      <label>Carbs g / 100g <input type="number" id="cf-carbs" step="0.1" required /></label>
+      <button type="submit">Add food</button>
+    </form>
+
+    <p id="status" role="status"></p>
+  </main>
+
+  <script type="module" src="js/log.js"></script>
+</body>
+</html>

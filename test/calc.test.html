@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>calc.js self-check</title>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 2rem; }
+    .pass { color: #1a7f37; }
+    .fail { color: #cf222e; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>calc.js self-check</h1>
+  <ul id="results"></ul>
+
+  <script type="module">
+    import { bmr, tdee, targetKcal, macros } from "../js/calc.js";
+
+    const results = document.getElementById("results");
+    let failures = 0;
+
+    function assertClose(label, actual, expected, tolerance = 0.5) {
+      const pass = Math.abs(actual - expected) <= tolerance;
+      if (!pass) failures++;
+      const li = document.createElement("li");
+      li.className = pass ? "pass" : "fail";
+      li.textContent = `${pass ? "PASS" : "FAIL"} — ${label}: got ${actual.toFixed(2)}, expected ~${expected}`;
+      results.appendChild(li);
+    }
+
+    // Hand-checked example: male, 30y, 80kg, 180cm, moderate activity.
+    const b = bmr("male", 80, 180, 30);
+    assertClose("BMR (male 80kg/180cm/30y)", b, 1780);
+
+    const t = tdee(b, "moderate");
+    assertClose("TDEE (moderate)", t, 2759);
+
+    // Female example.
+    const bFemale = bmr("female", 60, 165, 25);
+    assertClose("BMR (female 60kg/165cm/25y)", bFemale, 1345.75);
+
+    // BMR floor: an aggressive loss rate must never push target below BMR.
+    const aggressiveLoss = targetKcal(b, t, "lose", 2.0);
+    const li = document.createElement("li");
+    const floorHeld = aggressiveLoss >= b - 0.01;
+    if (!floorHeld) failures++;
+    li.className = floorHeld ? "pass" : "fail";
+    li.textContent = `${floorHeld ? "PASS" : "FAIL"} — aggressive lose-rate stays >= BMR: got ${aggressiveLoss.toFixed(2)}, BMR ${b.toFixed(2)}`;
+    results.appendChild(li);
+
+    // Carbs floor: extreme protein setting must not go negative.
+    const extremeMacros = macros(80, 1600, 2.2);
+    const li2 = document.createElement("li");
+    const carbsOk = extremeMacros.carbsG >= 0;
+    if (!carbsOk) failures++;
+    li2.className = carbsOk ? "pass" : "fail";
+    li2.textContent = `${carbsOk ? "PASS" : "FAIL"} — carbs never negative: got ${extremeMacros.carbsG.toFixed(2)}g`;
+    results.appendChild(li2);
+
+    const summary = document.createElement("p");
+    summary.textContent = failures === 0 ? "All checks passed." : `${failures} check(s) FAILED.`;
+    summary.style.fontWeight = "bold";
+    document.body.appendChild(summary);
+  </script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+/* Design system: a written diary (serif) set against a measured tracker
+   (monospace) on a quiet paper surface — a personal ledger, not a dashboard.
+   Structural surfaces (calendar, ledger rows) stay flat and square-edged;
+   interactive surfaces (buttons, inputs) get a small 3px softening — the one
+   deliberate distinction between "the page" and "the thing you can touch". */
+
+:root {
+  --color-bg: #ECEEEC;
+  --color-surface: #FFFFFF;
+  --color-ink: #1E2A2F;
+  --color-muted: #5B6B66;
+  --color-line: #B7C0B9;
+  --color-accent: #2F4858;
+  --color-accent-contrast: #FFFFFF;
+  --color-star: #8C5E19;
+  --color-logged: #4C7A62;
+
+  --chart-protein: var(--color-accent);
+  --chart-fat: var(--color-star);
+  --chart-carbs: var(--color-logged);
+  --chart-tdee: var(--color-muted);
+  --chart-target: var(--color-accent);
+
+  --font-serif: "Source Serif 4", Georgia, serif;
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+a { color: var(--color-accent); }
+
+/* --- Header / nav --- */
+
+header.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--color-line);
+}
+
+header.site-header strong {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+}
+
+header.site-header nav a {
+  margin-left: 1.25rem;
+  text-decoration: none;
+  color: var(--color-ink);
+  font-size: 0.9rem;
+}
+
+header.site-header nav a:hover { color: var(--color-accent); }
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* --- Form controls --- */
+
+button, input, select, textarea { font: inherit; color: inherit; }
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+
+.checkbox-label {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-ink);
+}
+.checkbox-label input[type="checkbox"] { width: auto; }
+
+input, select, textarea {
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--color-line);
+  border-radius: 3px;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+input[type="number"], input[type="date"] { font-family: var(--font-mono); }
+
+button {
+  cursor: pointer;
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  border: none;
+  border-radius: 3px;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.9rem;
+}
+
+button:hover { opacity: 0.9; }
+button:focus-visible, input:focus-visible, select:focus-visible,
+textarea:focus-visible, a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+button.secondary {
+  background: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-line);
+}
+
+/* --- Month navigation --- */
+
+.month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.month-nav h1 { margin: 0; font-size: 1.4rem; min-width: 12rem; text-align: center; }
+
+/* --- Calendar (ledger grid: flat, square, hairline-ruled) --- */
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-top: 1px solid var(--color-line);
+  border-left: 1px solid var(--color-line);
+}
+
+.calendar-weekday {
+  padding: 0.4rem 0.5rem;
+  text-align: right;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  border-right: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.calendar-day {
+  background: var(--color-surface);
+  min-height: 5.5rem;
+  padding: 0.4rem 0.5rem;
+  cursor: pointer;
+  border-right: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.calendar-day:hover { background: var(--color-bg); }
+
+.calendar-day.outside-month {
+  color: var(--color-muted);
+  background: transparent;
+}
+
+.calendar-day.today .day-number {
+  color: var(--color-accent-contrast);
+  background: var(--color-accent);
+  border-radius: 3px;
+}
+
+.calendar-day .day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.calendar-day .day-number {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-day .markers {
+  font-size: 0.85rem;
+  color: var(--color-star);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.calendar-day .logged-dot {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--color-logged);
+}
+
+.calendar-day .entry-preview {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Modal --- */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 42, 47, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal {
+  background: var(--color-surface);
+  border-radius: 4px;
+  padding: 1.5rem;
+  max-width: 480px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modal h2 { margin-top: 0; }
+
+.modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+[hidden] { display: none !important; }
+
+/* --- Ledger stat rows: label left (sans), value right (mono) --- */
+
+.stat-list { border-top: 1px solid var(--color-line); margin: 1rem 0; }
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--color-line);
+  font-size: 0.9rem;
+}
+
+.stat-row .stat-label { color: var(--color-muted); }
+.stat-row .stat-value { font-family: var(--font-mono); }
+.stat-row.emphasis .stat-value { font-weight: 600; color: var(--color-accent); }
+
+/* --- Charts --- */
+
+.chart-block { margin: 1.75rem 0; }
+.chart-block h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--color-line);
+  border-left: 1px solid var(--color-line);
+}
+.chart-grid > div {
+  border-right: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
+  padding: 0.5rem;
+}
+svg.bar-chart text { font-family: var(--font-mono); font-size: 10px; fill: var(--color-ink); }
+
+details {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+details summary { cursor: pointer; color: var(--color-ink); }
+details p { font-family: var(--font-sans); }
+
+/* --- Food log rows --- */
+
+.day-entry-row {
+  border-bottom: 1px solid var(--color-line);
+  padding: 0.5rem 0;
+}
+
+.meal-section { margin-bottom: 1.5rem; }
+.meal-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.meal-add-btn { margin-top: 0.4rem; }
+
+.small-multiple-label {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.log-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.log-row input[list] { flex: 2; }
+.log-row .grams-input { width: 5.5rem; font-family: var(--font-mono); }
+.log-row .row-macros {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  min-width: 10rem;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 420px;
+}
+
+.button-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.add-food-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 320px;
+  margin-top: 1rem;
+}
+
+.login-main {
+  max-width: 360px;
+  margin-top: 4rem;
+}
+
+@media (max-width: 480px) {
+  main { padding: 1.5rem 1rem; }
+  .calendar-day { min-height: 4rem; }
+  header.site-header nav a { margin-left: 0.75rem; }
+}
