@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Write</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=Caveat:wght@500;600&family=Special+Elite&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a href="index.html" class="logo">Diary</a>
+    <nav>
+      <a href="diary.html">Diary</a>
+      <a href="profile.html">Profile</a>
+      <a href="log.html">Food log</a>
+      <a href="#" id="sign-out">Sign out</a>
+    </nav>
+  </header>
+
+  <main class="entry-editor">
+    <a href="diary.html" class="back-link">&larr; Back to diary</a>
+
+    <input type="text" id="entry-title" class="entry-title-input" placeholder="Entry title" required />
+
+    <div class="entry-meta-row">
+      <label>Date
+        <input type="date" id="entry-date" required />
+      </label>
+      <label>Font
+        <select id="entry-font">
+          <option value="sans">Sans</option>
+          <option value="serif">Serif</option>
+          <option value="handwritten">Handwritten</option>
+          <option value="typewriter">Typewriter</option>
+        </select>
+      </label>
+      <label class="checkbox-label">
+        <input type="checkbox" id="entry-pinned" />
+        Pin this entry
+      </label>
+    </div>
+
+    <div class="thumbnail-upload" id="thumbnail-upload">
+      <img id="thumbnail-preview" alt="Thumbnail preview" hidden />
+      <span id="thumbnail-placeholder">+ Add thumbnail</span>
+    </div>
+    <input type="file" id="thumbnail-input" accept="image/*" hidden />
+
+    <div class="editor-toolbar">
+      <button type="button" class="secondary" data-cmd="bold"><strong>B</strong></button>
+      <button type="button" class="secondary" data-cmd="italic"><em>I</em></button>
+      <button type="button" class="secondary" id="insert-image-btn">+ Image</button>
+      <button type="button" class="secondary" id="insert-code-btn">&lt;/&gt; Code</button>
+    </div>
+    <input type="file" id="content-image-input" accept="image/*" hidden />
+
+    <div id="entry-content" class="entry-content" contenteditable="true"></div>
+
+    <div class="button-row">
+      <button id="save-entry-btn">Save</button>
+      <button type="button" class="secondary" id="delete-entry-btn" hidden>Delete</button>
+    </div>
+    <p id="status" role="status"></p>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script type="module" src="js/entry.js"></script>
+</body>
+</html>

@@ -13,14 +13,11 @@ export async function requireSession() {
   return session;
 }
 
-export async function signInWithEmail(email) {
-  return supabase.auth.signInWithOtp({
-    email,
-    options: { emailRedirectTo: window.location.origin + "/index.html" },
-  });
+export async function signInWithPassword(email, password) {
+  return supabase.auth.signInWithPassword({ email, password });
 }
 
 export async function signOut() {
   await supabase.auth.signOut();
-  window.location.replace("login.html");
+  window.location.replace("index.html");
 }

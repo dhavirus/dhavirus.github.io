@@ -3,90 +3,122 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Profile</title>
+  <title>Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <header class="site-header">
-    <strong>Diary</strong>
-    <nav>
-      <a href="index.html">Diary</a>
-      <a href="profile.html">Profile</a>
-      <a href="log.html">Food log</a>
-      <a href="#" id="sign-out">Sign out</a>
-    </nav>
-  </header>
+  <div class="dashboard-shell">
+    <aside class="sidebar">
+      <a href="index.html" class="logo">Diary</a>
+      <nav>
+        <a href="diary.html">Diary</a>
+        <a href="profile.html" class="active">Dashboard</a>
+        <a href="log.html">Food log</a>
+      </nav>
+      <a href="#" id="sign-out" class="signout-link">Sign out</a>
+    </aside>
 
-  <main>
-    <h1>Profile &amp; targets</h1>
-
-    <form id="profile-form" class="profile-form">
-      <label>Weight (kg)
-        <input type="number" id="weight_kg" step="0.1" min="1" required />
-      </label>
-      <label>Height (cm)
-        <input type="number" id="height_cm" step="0.1" min="1" required />
-      </label>
-      <label>Age
-        <input type="number" id="age" min="1" step="1" required />
-      </label>
-      <label>Sex
-        <select id="sex">
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
-      </label>
-      <label>Activity level
-        <select id="activity_level"></select>
-      </label>
-      <label>Goal
-        <select id="goal">
-          <option value="lose">Lose weight</option>
-          <option value="maintain">Maintain weight</option>
-          <option value="gain">Gain weight</option>
-        </select>
-      </label>
-      <label>Rate (kg/week, for lose/gain)
-        <input type="number" id="rate_kg_per_week" step="0.05" min="0" value="0.5" />
-      </label>
-      <label>Protein target (g/kg bodyweight)
-        <input type="number" id="protein_g_per_kg" step="0.1" min="1.6" max="2.2" value="1.8" />
-      </label>
-      <button type="submit">Save profile</button>
-    </form>
-
-    <p id="status" role="status"></p>
-
-    <section id="results" hidden>
-      <h2>Your targets</h2>
-      <div class="stat-list" id="targets-stat-list"></div>
-
-      <details>
-        <summary>How this is calculated</summary>
-        <p>BMR (Mifflin–St Jeor): men = 10×weight + 6.25×height − 5×age + 5; women = 10×weight + 6.25×height − 5×age − 161.</p>
-        <p>TDEE = BMR × activity multiplier. Target kcal shifts TDEE by ~7,700 kcal per kg/week of the chosen rate, never dropping below BMR.</p>
-        <p>Protein = your chosen g/kg. Fat = 25% of target kcal. Carbs = remainder.</p>
-      </details>
-
-      <div class="chart-block">
-        <h3>Target vs. maintenance (TDEE)</h3>
-        <svg id="chart-target-tdee"></svg>
+    <main class="dashboard-main">
+      <div class="dashboard-header">
+        <h1>Dashboard</h1>
+        <p class="dashboard-subtitle">Your targets, today's food, and this month at a glance.</p>
       </div>
 
-      <div class="chart-block">
-        <h3>Macro split (grams)</h3>
-        <svg id="chart-macros"></svg>
-      </div>
+      <div class="dashboard-grid">
+        <div class="dashboard-col">
+          <div class="kpi-row" id="kpi-row" hidden></div>
 
-      <div class="chart-block">
-        <h3>Target kcal across activity &amp; goal combinations</h3>
-        <div class="chart-grid" id="chart-small-multiples"></div>
+          <div class="dashboard-card">
+            <h2>Your profile</h2>
+            <form id="profile-form" class="profile-form">
+              <label>Weight (kg)
+                <input type="number" id="weight_kg" step="0.1" min="1" required />
+              </label>
+              <label>Height (cm)
+                <input type="number" id="height_cm" step="0.1" min="1" required />
+              </label>
+              <label>Age
+                <input type="number" id="age" min="1" step="1" required />
+              </label>
+              <label>Sex
+                <select id="sex">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </label>
+              <label>Activity level
+                <select id="activity_level"></select>
+              </label>
+              <label>Goal
+                <select id="goal">
+                  <option value="lose">Lose weight</option>
+                  <option value="maintain">Maintain weight</option>
+                  <option value="gain">Gain weight</option>
+                </select>
+              </label>
+              <label>Rate (kg/week, for lose/gain)
+                <input type="number" id="rate_kg_per_week" step="0.05" min="0" value="0.5" />
+              </label>
+              <label>Protein target (g/kg bodyweight)
+                <input type="number" id="protein_g_per_kg" step="0.1" min="1.6" max="2.2" value="1.8" />
+              </label>
+              <button type="submit">Save profile</button>
+            </form>
+            <p id="status" role="status"></p>
+          </div>
+        </div>
+
+        <div class="dashboard-col">
+          <div class="dashboard-card">
+            <h2>Today's food</h2>
+            <div id="food-summary-content">Loading…</div>
+            <div class="button-row">
+              <a href="log.html"><button class="secondary">Open food log</button></a>
+            </div>
+          </div>
+
+          <div class="dashboard-card" id="remaining-card" hidden>
+            <h2>Remaining today</h2>
+            <div id="remaining-content"></div>
+          </div>
+
+          <div class="dashboard-card">
+            <h2>Today's entry</h2>
+            <div id="today-entry-content">Loading…</div>
+          </div>
+        </div>
+
+        <div class="dashboard-col">
+          <div class="dashboard-card" id="macro-chart-card" hidden>
+            <h3>Macro split</h3>
+            <svg id="chart-macros"></svg>
+            <div id="macro-legend"></div>
+            <details>
+              <summary>How this is calculated</summary>
+              <p>BMR (Mifflin–St Jeor): men = 10×weight + 6.25×height − 5×age + 5; women = 10×weight + 6.25×height − 5×age − 161.</p>
+              <p>TDEE = BMR × activity multiplier. Target kcal shifts TDEE by ~7,700 kcal per kg/week of the chosen rate, never dropping below BMR.</p>
+              <p>Protein = your chosen g/kg. Fat = 25% of target kcal. Carbs = remainder.</p>
+            </details>
+          </div>
+
+          <div class="dashboard-card">
+            <h2 id="mini-cal-title"></h2>
+            <div class="calendar-grid mini-calendar" id="mini-cal-weekdays"></div>
+            <div class="calendar-grid mini-calendar" id="mini-cal-days"></div>
+            <div class="stat-list" id="month-stats"></div>
+          </div>
+
+          <div class="dashboard-card" id="small-multiples-card" hidden>
+            <h3>Target kcal across activity &amp; goal combinations</h3>
+            <div class="chart-grid" id="chart-small-multiples"></div>
+          </div>
+        </div>
       </div>
-    </section>
-  </main>
+    </main>
+  </div>
 
   <script type="module" src="js/profile.js"></script>
 </body>

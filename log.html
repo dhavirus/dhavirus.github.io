@@ -6,14 +6,16 @@
   <title>Food log</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <div class="doodle-bg" id="doodle-bg" aria-hidden="true"></div>
+
   <header class="site-header">
-    <strong>Diary</strong>
+    <a href="index.html" class="logo">Diary</a>
     <nav>
-      <a href="index.html">Diary</a>
+      <a href="diary.html">Diary</a>
       <a href="profile.html">Profile</a>
       <a href="log.html">Food log</a>
       <a href="#" id="sign-out">Sign out</a>
@@ -44,6 +46,12 @@
       <label>Protein g / 100g <input type="number" id="cf-protein" step="0.1" required /></label>
       <label>Fat g / 100g <input type="number" id="cf-fat" step="0.1" required /></label>
       <label>Carbs g / 100g <input type="number" id="cf-carbs" step="0.1" required /></label>
+      <label>Unit (optional, e.g. "egg" — leave as "g" if it's just weighed)
+        <input type="text" id="cf-unit" value="g" />
+      </label>
+      <label>Grams per unit (e.g. 1 egg ≈ 50g)
+        <input type="number" id="cf-grams-per-unit" value="1" step="0.1" min="0.1" />
+      </label>
       <button type="submit">Add food</button>
     </form>
 
@@ -51,5 +59,10 @@
   </main>
 
   <script type="module" src="js/log.js"></script>
+  <script type="module">
+    import { scatterDoodles, FOOD_DOODLES } from "./js/doodles.js";
+    const count = window.innerWidth <= 720 ? 40 : 100;
+    scatterDoodles(document.getElementById("doodle-bg"), FOOD_DOODLES, count);
+  </script>
 </body>
 </html>

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Diary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=Caveat:wght@500;600&family=Special+Elite&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="doodle-bg" id="doodle-bg" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a href="index.html" class="logo">Diary</a>
+    <nav>
+      <a href="diary.html">Diary</a>
+      <a href="profile.html">Profile</a>
+      <a href="log.html">Food log</a>
+      <a href="#" id="sign-out">Sign out</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="board-header">
+      <h1>Diary</h1>
+      <a href="entry.html"><button>+ New entry</button></a>
+    </div>
+
+    <div class="board-layout">
+      <div class="board-grid" id="board-grid"></div>
+
+      <aside class="board-sidebar">
+        <div class="dashboard-card">
+          <div class="month-nav compact">
+            <button class="secondary" id="prev-month" aria-label="Previous month">&larr;</button>
+            <h2 id="month-label"></h2>
+            <button class="secondary" id="next-month" aria-label="Next month">&rarr;</button>
+          </div>
+          <div class="calendar-grid mini-calendar" id="calendar-weekdays"></div>
+          <div class="calendar-grid mini-calendar clickable" id="calendar-days"></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Day detail: list of entries for a clicked day -->
+  <div class="modal-backdrop" id="day-modal" hidden>
+    <div class="modal">
+      <h2 id="day-modal-title"></h2>
+      <div id="day-entries-list"></div>
+      <div class="modal-actions">
+        <button type="button" class="secondary" id="day-close">Close</button>
+        <a href="#" id="day-add-entry"><button type="button">+ Add entry for this day</button></a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/diary.js"></script>
+  <script type="module">
+    import { scatterDoodles, DIARY_DOODLES } from "./js/doodles.js";
+    const count = window.innerWidth <= 720 ? 40 : 100;
+    scatterDoodles(document.getElementById("doodle-bg"), DIARY_DOODLES, count);
+  </script>
+</body>
+</html>

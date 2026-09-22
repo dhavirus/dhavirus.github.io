@@ -7,6 +7,7 @@ import {
   WEEKDAY_LABELS,
   monthLabel,
 } from "./dateUtils.js";
+import { getSignedUrl, deleteImages, extractImagePaths } from "./storage.js";
 
 const session = await requireSession();
 if (!session) throw new Error("redirecting to login");
@@ -19,7 +20,7 @@ document.getElementById("sign-out").addEventListener("click", (e) => {
 let viewYear = new Date().getFullYear();
 let viewMonth = new Date().getMonth();
 let entriesByDate = new Map(); // isoDate -> entry[]
-let loggedDates = new Set(); // isoDate strings that have a food log (wired in milestone 4)
+let loggedDates = new Set();
 
 const weekdaysEl = document.getElementById("calendar-weekdays");
 weekdaysEl.innerHTML = WEEKDAY_LABELS.map(
@@ -79,7 +80,7 @@ function renderCalendar(gridDates) {
       <div class="day-header">
         <span class="day-number">${date.getDate()}</span>
         <span class="markers">
-          ${hasPinned ? "★" : ""}${hasLog ? '<span class="logged-dot" title="Food logged"></span>' : ""}
+          ${hasPinned ? '<span class="badge-pin" title="Pinned">★</span>' : ""}${hasLog ? '<span class="badge-logged" title="Food logged"></span>' : ""}
         </span>
       </div>
       ${preview ? `<span class="entry-preview">${escapeHtml(preview.title)}</span>` : ""}
@@ -101,6 +102,59 @@ document.getElementById("next-month").addEventListener("click", () => {
   loadMonth();
 });
 
+// --- Blog-style board (cover page) ---
+
+function plainTextExcerpt(html, len) {
+  if (!html) return "";
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  const text = div.textContent || "";
+  return text.length > len ? text.slice(0, len).trimEnd() + "…" : text;
+}
+
+function formatCardDate(iso) {
+  return new Date(iso + "T00:00:00").toLocaleDateString("en", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+async function loadBoard() {
+  const { data, error } = await supabase
+    .from("diary_entries")
+    .select("*")
+    .order("pinned", { ascending: false })
+    .order("entry_date", { ascending: false })
+    .limit(100);
+
+  const grid = document.getElementById("board-grid");
+
+  if (error || !data || data.length === 0) {
+    grid.innerHTML = `<p class="board-empty">No entries yet — write your first one.</p>`;
+    return;
+  }
+
+  grid.innerHTML = "";
+  for (const [i, entry] of data.entries()) {
+    const card = document.createElement("article");
+    card.className = entry.pinned ? "board-card tint-1 featured" : `board-card tint-${(i % 4) + 1}`;
+
+    const thumbnailUrl = entry.thumbnail_path ? await getSignedUrl(entry.thumbnail_path) : null;
+
+    card.innerHTML = `
+      ${thumbnailUrl ? `<img class="board-card-thumb" src="${thumbnailUrl}" alt="" />` : ""}
+      <div class="board-card-date">${formatCardDate(entry.entry_date)}</div>
+      <h3 class="entry-font-${entry.font}">${entry.pinned ? "★ " : ""}${escapeHtml(entry.title)}</h3>
+      <p class="board-card-excerpt">${escapeHtml(plainTextExcerpt(entry.content, entry.pinned ? 220 : 100))}</p>
+    `;
+    card.addEventListener("click", () => {
+      window.location.href = `entry.html?id=${entry.id}`;
+    });
+    grid.appendChild(card);
+  }
+}
+
 // --- Day detail modal ---
 
 const dayModal = document.getElementById("day-modal");
@@ -111,6 +165,7 @@ let dayModalDate = null;
 function openDayModal(iso) {
   dayModalDate = iso;
   dayModalTitle.textContent = iso;
+  document.getElementById("day-add-entry").href = `entry.html?date=${iso}`;
   renderDayEntries();
   dayModal.hidden = false;
 }
@@ -129,16 +184,12 @@ function renderDayEntries() {
       <div style="display:flex; justify-content:space-between; align-items:start;">
         <strong>${entry.pinned ? "★ " : ""}${escapeHtml(entry.title)}</strong>
         <div>
-          <button class="secondary" data-action="edit">Edit</button>
+          <a href="entry.html?id=${entry.id}"><button class="secondary">Edit</button></a>
           <button class="secondary" data-action="delete">Delete</button>
         </div>
       </div>
-      <p style="white-space:pre-wrap;">${escapeHtml(entry.content || "")}</p>
+      <p>${escapeHtml(plainTextExcerpt(entry.content, 200))}</p>
     `;
-    row.querySelector('[data-action="edit"]').addEventListener("click", () => {
-      dayModal.hidden = true;
-      openEntryModal(entry);
-    });
     row.querySelector('[data-action="delete"]').addEventListener("click", () => deleteEntry(entry.id));
     dayEntriesList.appendChild(row);
   }
@@ -151,55 +202,17 @@ function escapeHtml(str) {
 }
 
 document.getElementById("day-close").addEventListener("click", () => (dayModal.hidden = true));
-document.getElementById("day-add-entry").addEventListener("click", () => {
-  dayModal.hidden = true;
-  openEntryModal(null, dayModalDate);
-});
-
-// --- Add/edit entry modal ---
-
-const entryModal = document.getElementById("entry-modal");
-const entryForm = document.getElementById("entry-form");
-const entryModalTitle = document.getElementById("entry-modal-title");
-
-function openEntryModal(entry, defaultDate) {
-  entryModalTitle.textContent = entry ? "Edit entry" : "Add entry";
-  document.getElementById("entry-id").value = entry?.id || "";
-  document.getElementById("entry-date").value = entry?.entry_date || defaultDate || todayISODate();
-  document.getElementById("entry-title").value = entry?.title || "";
-  document.getElementById("entry-content").value = entry?.content || "";
-  document.getElementById("entry-pinned").checked = !!entry?.pinned;
-  entryModal.hidden = false;
-}
-
-document.getElementById("add-entry-btn").addEventListener("click", () => openEntryModal(null));
-document.getElementById("entry-cancel").addEventListener("click", () => (entryModal.hidden = true));
-
-entryForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const id = document.getElementById("entry-id").value;
-  const payload = {
-    entry_date: document.getElementById("entry-date").value,
-    title: document.getElementById("entry-title").value,
-    content: document.getElementById("entry-content").value,
-    pinned: document.getElementById("entry-pinned").checked,
-  };
-
-  if (id) {
-    await supabase.from("diary_entries").update(payload).eq("id", id);
-  } else {
-    await supabase.from("diary_entries").insert(payload);
-  }
-
-  entryModal.hidden = true;
-  await loadMonth();
-});
 
 async function deleteEntry(id) {
   if (!confirm("Delete this entry?")) return;
+
+  const { data: entry } = await supabase.from("diary_entries").select("content, thumbnail_path").eq("id", id).maybeSingle();
+  const paths = [...extractImagePaths(entry?.content), entry?.thumbnail_path].filter(Boolean);
+
   await supabase.from("diary_entries").delete().eq("id", id);
-  await loadMonth();
+  await deleteImages(paths);
+  await Promise.all([loadMonth(), loadBoard()]);
   renderDayEntries();
 }
 
-await loadMonth();
+await Promise.all([loadMonth(), loadBoard()]);

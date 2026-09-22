@@ -8,10 +8,10 @@
   { "name": "Pork loin, grilled", "kcal": 248, "protein_g": 28.0, "fat_g": 15.0, "carbs_g": 0.0 },
   { "name": "Ground beef, pan-fried", "kcal": 272, "protein_g": 25.4, "fat_g": 19.0, "carbs_g": 0.0 },
   { "name": "Salmon, grilled", "kcal": 227, "protein_g": 25.5, "fat_g": 13.6, "carbs_g": 0.1 },
-  { "name": "Egg, boiled", "kcal": 151, "protein_g": 12.9, "fat_g": 10.9, "carbs_g": 0.3 },
+  { "name": "Egg, boiled", "kcal": 151, "protein_g": 12.9, "fat_g": 10.9, "carbs_g": 0.3, "unit": "egg", "grams_per_unit": 50 },
   { "name": "Tofu, firm, raw", "kcal": 72, "protein_g": 6.6, "fat_g": 4.2, "carbs_g": 1.6 },
-  { "name": "Natto", "kcal": 190, "protein_g": 16.5, "fat_g": 10.0, "carbs_g": 12.1 },
-  { "name": "Miso soup", "kcal": 40, "protein_g": 2.5, "fat_g": 1.2, "carbs_g": 4.5 },
+  { "name": "Natto", "kcal": 190, "protein_g": 16.5, "fat_g": 10.0, "carbs_g": 12.1, "unit": "pack", "grams_per_unit": 45 },
+  { "name": "Miso soup", "kcal": 40, "protein_g": 2.5, "fat_g": 1.2, "carbs_g": 4.5, "unit": "bowl", "grams_per_unit": 150 },
   { "name": "Broccoli, boiled", "kcal": 30, "protein_g": 3.9, "fat_g": 0.4, "carbs_g": 4.3 },
   { "name": "Spinach, boiled", "kcal": 25, "protein_g": 2.6, "fat_g": 0.5, "carbs_g": 2.4 },
   { "name": "Cabbage, raw", "kcal": 23, "protein_g": 1.3, "fat_g": 0.2, "carbs_g": 5.2 },
@@ -19,5 +19,5 @@
   { "name": "Potato, boiled", "kcal": 76, "protein_g": 1.6, "fat_g": 0.1, "carbs_g": 17.6 },
   { "name": "Plain yogurt", "kcal": 62, "protein_g": 3.6, "fat_g": 3.0, "carbs_g": 4.9 },
   { "name": "Whole milk", "kcal": 67, "protein_g": 3.3, "fat_g": 3.8, "carbs_g": 4.8 },
-  { "name": "Banana", "kcal": 93, "protein_g": 1.1, "fat_g": 0.2, "carbs_g": 22.5 }
+  { "name": "Banana", "kcal": 93, "protein_g": 1.1, "fat_g": 0.2, "carbs_g": 22.5, "unit": "banana", "grams_per_unit": 100 }
 ]

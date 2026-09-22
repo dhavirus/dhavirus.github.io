@@ -3,6 +3,16 @@
 Plain HTML/CSS/JS, no build step. Backend is Supabase (Postgres + Auth, free
 tier). Single-user site — only one account will ever exist.
 
+## Pages
+
+- `index.html` — public cover page. Shows a "Log in" button when signed out,
+  or links to Diary / Food log / Profile when signed in.
+- `login.html` — public, email + password form.
+- `diary.html` — blog-style board of entries with a mini calendar sidebar (protected).
+- `entry.html` — the entry editor: title, date, pin, font, thumbnail, rich content with images/code blocks (protected).
+- `profile.html` — BMR/TDEE/macro targets (protected).
+- `log.html` — daily food log (protected).
+
 ## Supabase project setup
 
 1. Create/open the project at supabase.com. This site is already configured
@@ -10,15 +20,24 @@ tier). Single-user site — only one account will ever exist.
    `js/supabaseClient.js`).
 2. **SQL Editor** → New query → paste and run all of `supabase/schema.sql`.
    This creates the four tables (`profile`, `diary_entries`, `custom_foods`,
-   `food_logs`) and enables Row Level Security on each.
+   `food_logs`), enables Row Level Security on each, and creates the private
+   `diary-images` storage bucket (for entry thumbnails/inline images) with
+   owner-only access policies — no separate dashboard step needed for that.
+   The whole file is safe to paste and run again any time this project adds
+   new columns/tables/policies — every statement is a no-op if it's already
+   applied.
 3. **Authentication → Users** → Add user → create your own email, with
    "Auto Confirm User" checked (do this *before* the next step).
-4. **Authentication → Providers → Email** → turn **off** "Allow new users to
-   sign up." This is what keeps the site single-user: the sign-in page is
+4. **Set a password for that user**: open the user's detail page — most
+   Supabase dashboards let you set a password directly there. If yours
+   doesn't, use "Send password recovery" once to set it via email instead.
+5. **Authentication → Providers → Email** → turn **off** "Allow new users to
+   sign up." This is what keeps the site single-user: the login page is
    public, but only the pre-created account can ever get a session.
-5. **Authentication → URL Configuration** → set Site URL to
-   `https://dhavirus.github.io`, and add it (plus `http://localhost:8000` for
-   local testing) under Redirect URLs.
+6. **Authentication → URL Configuration** → set Site URL to
+   `https://dhavirus.github.io` (harmless to also add `http://localhost:8000`
+   for local testing, though password login doesn't strictly need a redirect
+   URL the way the earlier magic-link flow did).
 
 ## RLS policy summary
 
@@ -28,6 +47,12 @@ updatable, or deletable when `auth.uid() = user_id`. `user_id` defaults to
 `with check` clause stops it from being spoofed to another user's id. Since
 sign-up is disabled and only one account exists, in practice this means only
 the site owner, signed in, can ever read or write any row.
+
+Images work the same way but as files, not rows: the `diary-images` bucket is
+private, and its objects live at `<user_id>/<filename>` — the storage
+policies check that the first path segment matches `auth.uid()`. Because the
+bucket is private, images are never served by a permanent public URL; the app
+requests a short-lived signed URL each time it displays one.
 
 ## Adding foods
 

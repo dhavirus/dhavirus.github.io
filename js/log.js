@@ -25,13 +25,14 @@ const dateInput = document.getElementById("log-date");
 dateInput.value = todayISODate();
 
 function emptyRow() {
-  return { food_name: "", grams: "" };
+  return { food_name: "", quantity: "" };
 }
 
 function rowMacros(row) {
   const food = foodsByName.get(row.food_name.trim().toLowerCase());
-  const grams = parseFloat(row.grams);
-  if (!food || !grams || grams <= 0) return null;
+  const quantity = parseFloat(row.quantity);
+  if (!food || !quantity || quantity <= 0) return null;
+  const grams = quantity * (food.grams_per_unit || 1);
   return { ...scaleFood(food, grams), food_name: food.name, grams };
 }
 
@@ -91,16 +92,24 @@ function renderRow(meal, index, row) {
   nameInput.placeholder = "Search food...";
   nameInput.value = row.food_name;
 
-  const gramsInput = document.createElement("input");
-  gramsInput.type = "number";
-  gramsInput.className = "grams-input";
-  gramsInput.min = "0";
-  gramsInput.step = "1";
-  gramsInput.placeholder = "grams";
-  gramsInput.value = row.grams;
+  const quantityInput = document.createElement("input");
+  quantityInput.type = "number";
+  quantityInput.className = "quantity-input";
+  quantityInput.min = "0";
+  quantityInput.step = "any";
+  quantityInput.placeholder = "qty";
+  quantityInput.value = row.quantity;
+
+  const unitLabel = document.createElement("span");
+  unitLabel.className = "unit-label";
 
   const macrosLabel = document.createElement("span");
   macrosLabel.className = "row-macros";
+
+  function updateUnitLabel() {
+    const food = foodsByName.get(row.food_name.trim().toLowerCase());
+    unitLabel.textContent = food ? food.unit : "";
+  }
 
   function updateMacrosLabel() {
     const m = rowMacros(row);
@@ -108,15 +117,17 @@ function renderRow(meal, index, row) {
       ? `${Math.round(m.kcal)}kcal P${Math.round(m.protein_g)} F${Math.round(m.fat_g)} C${Math.round(m.carbs_g)}`
       : "";
   }
+  updateUnitLabel();
   updateMacrosLabel();
 
   nameInput.addEventListener("input", () => {
     row.food_name = nameInput.value;
+    updateUnitLabel();
     updateMacrosLabel();
     renderTotals();
   });
-  gramsInput.addEventListener("input", () => {
-    row.grams = gramsInput.value;
+  quantityInput.addEventListener("input", () => {
+    row.quantity = quantityInput.value;
     updateMacrosLabel();
     renderTotals();
   });
@@ -130,7 +141,7 @@ function renderRow(meal, index, row) {
     renderMeals();
   });
 
-  rowEl.append(nameInput, gramsInput, macrosLabel, removeBtn);
+  rowEl.append(nameInput, quantityInput, unitLabel, macrosLabel, removeBtn);
   return rowEl;
 }
 
@@ -176,7 +187,11 @@ async function loadDay(date) {
   for (const meal of MEALS) {
     const mealRows = (data || [])
       .filter((r) => r.meal === meal)
-      .map((r) => ({ food_name: r.food_name, grams: r.grams }));
+      .map((r) => {
+        const food = foodsByName.get(r.food_name.trim().toLowerCase());
+        const gramsPerUnit = food?.grams_per_unit || 1;
+        return { food_name: r.food_name, quantity: r.grams / gramsPerUnit };
+      });
     rows[meal] = mealRows.length > 0 ? mealRows : [emptyRow()];
   }
   renderMeals();
@@ -233,6 +248,8 @@ addFoodForm.addEventListener("submit", async (e) => {
     protein_g: parseFloat(document.getElementById("cf-protein").value),
     fat_g: parseFloat(document.getElementById("cf-fat").value),
     carbs_g: parseFloat(document.getElementById("cf-carbs").value),
+    unit: document.getElementById("cf-unit").value.trim() || "g",
+    grams_per_unit: parseFloat(document.getElementById("cf-grams-per-unit").value) || 1,
   };
   const { error } = await addCustomFood(session.user.id, food);
   document.getElementById("status").textContent = error ? "Could not add food (name may already exist)." : "Food added.";
