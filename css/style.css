@@ -262,7 +262,7 @@ button.secondary:hover { background: color-mix(in srgb, var(--color-accent) 10%,
   color: var(--color-ink);
   font-weight: 400;
 }
-.checkbox-label input[type="checkbox"] { width: 1.2rem; height: 1.2rem; min-height: 0; }
+.checkbox-label input[type="checkbox"] { width: 1.2rem; height: 1.2rem; min-height: 0; accent-color: var(--color-primary); }
 
 /* --- Cover / landing page --- */
 
@@ -689,7 +689,7 @@ details p { font-family: var(--font-body); }
    dedicated CSS rule per doodle would just be noise. */
 
 .doodle-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: -1; }
-.doodle { position: absolute; color: var(--color-ink); opacity: 0.09; }
+.doodle { position: absolute; color: var(--color-primary); opacity: 0.14; }
 
 .login-main { max-width: 380px; margin: var(--space-400) auto 0; }
 .login-main .back-link { display: inline-block; margin-bottom: var(--space-150); color: var(--color-muted); font-size: var(--text-90); text-decoration: none; transition: color var(--speed); }
