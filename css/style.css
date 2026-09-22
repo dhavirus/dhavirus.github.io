@@ -1,32 +1,44 @@
-/* Monochrome editorial design system: black/white/grey, thin hairlines,
-   pill buttons, a serif display face for headings against a clean grotesque
-   sans for everything else. No color noise — the few accents that exist
-   (pin, logged-day marker, chart series) carry actual meaning.
+/* Vibrant redesign (design-system/diary-tracker/MASTER.md): Amber + Blue
+   palette, Fredoka/Nunito type pairing, Soft UI Evolution style. Replaces
+   the earlier monochrome editorial system one token at a time — see
+   MASTER.md for the full rationale and the approved palette table.
 
    Token audit (redesign/vibrant, step 1): every hard-coded color, font,
-   font size, border radius and spacing value used below now has a token
-   here. Values are kept byte-identical to the pre-audit CSS — this pass
-   only centralizes, it does not restyle. Structural dimensions (component
-   widths/heights, max-widths, border widths, line-heights) are left as
-   literals: they're layout decisions, not part of a color/type/space
-   design-token scale. No box-shadow values existed in the original file,
-   so no shadow tokens are defined yet. */
+   font size, border radius and spacing value used below has a token
+   here. Structural dimensions (component widths/heights, max-widths,
+   border widths, line-heights) are left as literals: they're layout
+   decisions, not part of a color/type/space design-token scale. No
+   box-shadow values existed in the original file, so no shadow tokens
+   are defined yet (step 4 may add them for card elevation). */
 
 :root {
   --color-bg: #FFFFFF;
-  --color-page: #FAFAFA;
+  --color-page: #FFFBEB; /* MASTER Background — warm cream, was #FAFAFA */
   --color-ink: #171717;
   --color-ink-hover: #333333;
-  --color-muted: #6B7280;
-  --color-line: #E5E7EB;
+  --color-muted: #475569; /* MASTER Muted Foreground, was #6B7280 */
+  --color-line: #FDE68A; /* MASTER Border, was #E5E7EB */
 
   --color-inverse: #FFFFFF; /* text/icons on dark (--color-ink) surfaces */
   --color-inverse-muted: rgba(255, 255, 255, 0.7);
   --color-overlay: rgba(23, 23, 23, 0.4); /* modal backdrop, == --color-ink @ 40% */
 
+  /* Brand palette (MASTER.md) — not yet applied to components; step 4
+     wires these into buttons/active-states/hierarchy one group at a time. */
+  --color-primary: #F59E0B;
+  --color-on-primary: #0F172A;
+  --color-secondary: #FBBF24;
+  --color-on-secondary: #0F172A;
+  --color-accent: #2563EB;
+  --color-on-accent: #FFFFFF;
+
+  --color-success: #16A34A;
+  --color-warning: #F59E0B; /* == --color-primary: amber reads as warning */
+  --color-error: #DC2626;
+
   --color-star: #B45309;
-  --color-logged: #16A34A;
-  --color-destructive: #DC2626;
+  --color-logged: var(--color-success);
+  --color-destructive: var(--color-error);
 
   --board-tint-1: #FDF3E7;
   --board-tint-2: #EAF3EC;
@@ -40,8 +52,9 @@
   --chart-tdee: #9CA3AF;
   --chart-target: #171717;
 
-  --font-heading: "Fraunces", Georgia, serif;
-  --font-body: "Inter", system-ui, sans-serif;
+  --font-heading: "Fredoka", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, sans-serif;
+  --font-serif: "Fraunces", Georgia, serif; /* kept alive for the "serif" entry-style option */
   --font-handwritten: "Caveat", cursive;
   --font-typewriter: "Special Elite", monospace;
   --font-size-base: 16px;
@@ -724,7 +737,7 @@ details p { font-family: var(--font-body); }
 .entry-content img { max-width: 100%; border-radius: var(--radius-xs); }
 
 .entry-font-sans { font-family: var(--font-body); }
-.entry-font-serif { font-family: var(--font-heading); }
+.entry-font-serif { font-family: var(--font-serif); }
 .entry-font-handwritten { font-family: var(--font-handwritten); font-size: var(--text-130); }
 .entry-font-typewriter { font-family: var(--font-typewriter); }
 
