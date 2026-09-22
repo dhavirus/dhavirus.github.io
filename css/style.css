@@ -446,9 +446,10 @@ button.secondary:hover { background: color-mix(in srgb, var(--color-accent) 10%,
   display: flex;
   flex-direction: column;
   gap: var(--space-50);
-  transition: transform var(--speed);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--speed), box-shadow var(--speed);
 }
-.board-card:hover { transform: translateY(-2px); }
+.board-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
 .board-card.tint-1 { --board-card-bg: var(--board-tint-1); }
 .board-card.tint-2 { --board-card-bg: var(--board-tint-2); }
 .board-card.tint-3 { --board-card-bg: var(--board-tint-3); }
@@ -533,9 +534,11 @@ button.secondary:hover { background: color-mix(in srgb, var(--color-accent) 10%,
 
 .calendar-day.outside-month { color: var(--color-muted); background: var(--color-page); }
 
+.calendar-day.today { background: color-mix(in srgb, var(--color-primary) 6%, var(--color-bg)); }
+
 .calendar-day.today .day-number {
-  background: var(--color-ink);
-  color: var(--color-inverse);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
   border-radius: var(--radius-pill);
 }
 
@@ -594,6 +597,7 @@ button.secondary:hover { background: color-mix(in srgb, var(--color-accent) 10%,
   width: 100%;
   max-height: 85vh;
   overflow-y: auto;
+  box-shadow: var(--shadow-lg);
 }
 
 .modal form { display: flex; flex-direction: column; gap: var(--space-90); }
@@ -648,7 +652,7 @@ svg.pie-chart { display: block; max-width: 180px; margin: 0 auto; }
 .legend-value { color: var(--color-muted); }
 
 details { color: var(--color-muted); font-size: var(--text-85); }
-details summary { cursor: pointer; color: var(--color-ink); font-weight: 500; }
+details summary { cursor: pointer; color: var(--color-accent); font-weight: 500; }
 details p { font-family: var(--font-body); }
 
 /* --- Food log rows --- */
@@ -688,13 +692,15 @@ details p { font-family: var(--font-body); }
 .doodle { position: absolute; color: var(--color-ink); opacity: 0.09; }
 
 .login-main { max-width: 380px; margin: var(--space-400) auto 0; }
-.login-main .back-link { display: inline-block; margin-bottom: var(--space-150); color: var(--color-muted); font-size: var(--text-90); text-decoration: none; }
+.login-main .back-link { display: inline-block; margin-bottom: var(--space-150); color: var(--color-muted); font-size: var(--text-90); text-decoration: none; transition: color var(--speed); }
+.login-main .back-link:hover { color: var(--color-accent); }
 
 /* --- Entry editor --- */
 
 .entry-editor { max-width: 720px; }
 
-.back-link { display: inline-block; margin-bottom: var(--space-150); color: var(--color-muted); font-size: var(--text-90); text-decoration: none; }
+.back-link { display: inline-block; margin-bottom: var(--space-150); color: var(--color-muted); font-size: var(--text-90); text-decoration: none; transition: color var(--speed); }
+.back-link:hover { color: var(--color-accent); }
 
 .entry-title-input {
   display: block;
@@ -732,6 +738,11 @@ details p { font-family: var(--font-body); }
   overflow: hidden;
   color: var(--color-muted);
   font-size: var(--text-90);
+  transition: border-color var(--speed), background var(--speed);
+}
+.thumbnail-upload:hover {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 5%, transparent);
 }
 .thumbnail-upload img { width: 100%; max-height: 260px; object-fit: cover; }
 
@@ -746,7 +757,7 @@ details p { font-family: var(--font-body); }
   margin-bottom: var(--space-125);
   line-height: 1.7;
 }
-.entry-content:focus { outline: none; border-color: var(--color-ink); }
+.entry-content:focus { outline: none; border-color: var(--color-accent); }
 .entry-content pre { border-radius: var(--radius-xs); padding: var(--space-100); overflow-x: auto; }
 .entry-content img { max-width: 100%; border-radius: var(--radius-xs); }
 
@@ -754,6 +765,11 @@ details p { font-family: var(--font-body); }
 .entry-font-serif { font-family: var(--font-serif); }
 .entry-font-handwritten { font-family: var(--font-handwritten); font-size: var(--text-130); }
 .entry-font-typewriter { font-family: var(--font-typewriter); }
+
+/* Only destructive action in the app - kept semantically red regardless
+   of the .secondary (blue accent outline) styling other toolbar buttons use. */
+#delete-entry-btn { color: var(--color-error); border-color: var(--color-error); }
+#delete-entry-btn:hover { background: color-mix(in srgb, var(--color-error) 10%, transparent); }
 
 @media (max-width: 720px) {
   .cover-hero { grid-template-columns: 1fr; padding-top: var(--space-200); }
